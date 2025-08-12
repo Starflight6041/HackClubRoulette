@@ -12,6 +12,7 @@ public class GameManagement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //test
         InputAction mousepos = InputSystem.actions.FindAction("point");
         InputAction click = InputSystem.actions.FindAction("click");
         // now use Raycast
