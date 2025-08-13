@@ -10,9 +10,10 @@ public class Entity : MonoBehaviour
     {
         
     }
-    public void Act() // This function MUST eventually call GetFastestActing();
+    public virtual void Act() // This function MUST eventually call GetFastestActing();
     {
         AddTime(5);
+        Debug.Log("no");
         gameManager.GetFastestActing(); 
     }
     public void AddTime(float t)

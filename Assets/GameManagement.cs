@@ -163,8 +163,8 @@ public class GameManagement : MonoBehaviour
         for (int i = 0; i < entities.Count; i++)
         {
 
-            Debug.Log(entities[i].GetTime());
-            Debug.Log(entities[i]);
+            //Debug.Log(entities[i].GetTime());
+            //Debug.Log(entities[i]);
         }
         
 
