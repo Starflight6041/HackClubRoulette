@@ -17,7 +17,7 @@ public class Battlemap : MonoBehaviour
     {
 
     }
-    public bool OccupiedStatus()
+    public bool GetOccupied()
     {
         return isOccupied; 
     }

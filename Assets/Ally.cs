@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class Ally : Entity
@@ -7,6 +8,7 @@ public class Ally : Entity
     public InputAction click;
     private Vector2 prospectivePosition;
     private int maxMove;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,7 +24,8 @@ public class Ally : Entity
     new public void Act()
     {
         isMoving = true;
-
+        AddTime(5);
+        Debug.Log("yes");
     }
     public void PlayerMove()
     {
@@ -34,8 +37,12 @@ public class Ally : Entity
                 GameObject gO = hit.collider.gameObject;
                 if (isMoving && gO.GetComponent<Battlemap>() != null)
                 {
-                    //if (gO.GetComponent<Battlemap>().)
-                    prospectivePosition = gO.GetComponent<Battlemap>().GetPosition();
+                    if (!gO.GetComponent<Battlemap>().GetOccupied())
+                    {
+                        prospectivePosition = gO.GetComponent<Battlemap>().GetPosition();
+                        gameObject.transform.position = prospectivePosition;
+                        gameManager.GetFastestActing(); 
+                    }
                 }
                 
                     

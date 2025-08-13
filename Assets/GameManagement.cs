@@ -17,17 +17,19 @@ public class GameManagement : MonoBehaviour
     public InputAction mousepos;
     public InputAction click;
     public List<Vector2> possiblePositions = new List<Vector2>();
+    public CreateMap map;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        for (int i = 0; i < 10; i++)
-        {
-            for (int x = 0; x < 5; x++)
-            {
-                possiblePositions.Add(battlemap.ReturnPosition(i, x));
-                Debug.Log(battlemap.ReturnPosition(i, x));
-            }
-        }
+        //for (int i = 0; i < 10; i++)
+       // {
+          //  for (int x = 0; x < 5; x++)
+          //  {
+          //      possiblePositions.Add(battlemap.ReturnPosition(i, x));
+          //      Debug.Log(battlemap.ReturnPosition(i, x));
+         //   }
+       // }
         ScatterEntities();
         GetFastestActing();
         // test
@@ -37,23 +39,31 @@ public class GameManagement : MonoBehaviour
     }
     public void ScatterEntities()
     {
+
         for (int i = 0; i < entities.Count; i++)
         {
-            Vector2 p = possiblePositions[UnityEngine.Random.Range(0, possiblePositions.Count - 1)];
-            Debug.Log(p);
-            entities[i].gameObject.transform.position = p;
+            Battlemap b = map.ChooseRandom();
+            entities[i].gameObject.transform.position = b.GetPosition(); 
             
-            possiblePositions.Remove(p);
+            // Vector2 p = possiblePositions[UnityEngine.Random.Range(0, possiblePositions.Count - 1)];
+            //Debug.Log(p);
+            //entities[i].gameObject.transform.position = p;
+
+            //possiblePositions.Remove(p);
+
+
 
         }
     }
 
     public void ClickReceived()
     {
+        //Debug.Log("yes");
         if (click.WasPressedThisFrame())
         {
 
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousepos.ReadValue<Vector2>()), Vector2.zero);
+
             if (hit.collider != null)
             {
                 GameObject gO = hit.collider.gameObject;
@@ -98,7 +108,7 @@ public class GameManagement : MonoBehaviour
     }
     public void GetFastestActing() // Get the fastest acting to use for the RunTurn() method
     {
-        Debug.Log("fastest acting running");
+        //Debug.Log("fastest acting running");
         
         fastestEntities.Add(entities[0]);
         if (fastestEntities.Count > 1)
@@ -146,13 +156,15 @@ public class GameManagement : MonoBehaviour
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].AddTime(t * -1);
-        //    Debug.Log(entities[i].GetTime());
+            
+            
         }
         e.Act();
         for (int i = 0; i < entities.Count; i++)
         {
-            
+
             Debug.Log(entities[i].GetTime());
+            Debug.Log(entities[i]);
         }
         
 
