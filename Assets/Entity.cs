@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    private int timeToAct = 0;
+    public GameManagement gameManager; //probably grab this in void Start(); but I'm lazy rn
+    public float timeToAct = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         
     }
-    public void AddTime(int t)
+    public void Act() // This function MUST eventually call GetFastestActing();
+    {
+        AddTime(5);
+        gameManager.GetFastestActing(); 
+    }
+    public void AddTime(float t)
     {
         timeToAct += t;
     }
 
-    public int GetTime()
+    public float GetTime()
     {
         return timeToAct;
     }
