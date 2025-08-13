@@ -6,6 +6,7 @@ public class CreateMap : MonoBehaviour
 {
     public GameObject hexagon;
     public List<Battlemap> places = new List<Battlemap>();
+    public List<Battlemap> removed = new List<Battlemap>(); 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -38,15 +39,44 @@ public class CreateMap : MonoBehaviour
     public Battlemap ChooseRandom()
     {
         Battlemap randomB = places[UnityEngine.Random.Range(0, places.Count - 1)];
-        Occupy(randomB);
+        //Occupy(randomB);
         return randomB;
     }
-    public void Occupy(Battlemap b)
+    public void Occupy(int a, int b)
     {
 
-        places.Remove(b);
-        b.ChangeOccupied();
+        //places.Remove(b);
+        // removed.Add(b);
+        // b.ChangeOccupied();
+        for (int i = places.Count - 1; i >= 0; i--)
+        {
+            if (places[i].GetX() == a && places[i].GetY() == b)
+            {
+
+                Debug.Log(places.Count);
+                removed.Add(places[i]);
+                places.Remove(places[i]);
+                Debug.Log(places.Count);
+
+            }
+        }
         
+    }
+
+
+    public void Unoccupy(int a, int b)
+    {
+        //places.Add(b);
+        //removed.Remove(b);
+        for (int i = removed.Count - 1; i >= 0; i--)
+        {
+            if (removed[i].GetX() == a && removed[i].GetY() == b)
+            {
+                places.Add(removed[i]);
+            removed.Remove(removed[i]);
+            }
+            
+        }
     }
     
 

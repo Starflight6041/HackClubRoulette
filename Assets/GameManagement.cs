@@ -43,7 +43,11 @@ public class GameManagement : MonoBehaviour
         for (int i = 0; i < entities.Count; i++)
         {
             Battlemap b = map.ChooseRandom();
-            entities[i].gameObject.transform.position = b.GetPosition(); 
+            entities[i].gameObject.transform.position = b.GetPosition();
+            entities[i].tileOccupied = b;
+            map.Occupy(b.GetX(), b.GetY());
+            entities[i].ChangeX(b.GetX());
+            entities[i].ChangeY(b.GetY());
             
             // Vector2 p = possiblePositions[UnityEngine.Random.Range(0, possiblePositions.Count - 1)];
             //Debug.Log(p);
