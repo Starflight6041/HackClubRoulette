@@ -65,7 +65,7 @@ public class Enemy : Entity
     public void MoveTowardsClosest()
     {
         Debug.Log("moving");
-        
+
         int xMove = 0;
         if (closestPlayer.GetX() > x)
         {
@@ -86,17 +86,32 @@ public class Enemy : Entity
         }
         if (map.IsPositionUnoccupied(x + xMove, y + yMove))
         {
-            Debug.Log(x);
-            Debug.Log(y);
+
             map.Unoccupy(x, y);
             x = x + xMove;
             y = y + yMove;
             gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
             map.Occupy(x, y);
-            Debug.Log(x);
-            Debug.Log(y);
+
 
         }
+        else if (map.IsPositionUnoccupied(x, y + yMove))
+        {
+            map.Unoccupy(x, y);
+
+            y = y + yMove;
+            gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
+            map.Occupy(x, y);
+        }
+        else if (map.IsPositionUnoccupied(x + xMove, y))
+        {
+            map.Unoccupy(x, y);
+            x = x + xMove;
+
+            gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
+            map.Occupy(x, y);
+        }
+        //when enemies have more movement, use a for loop to loop through possible locations to move to
 
 
 
