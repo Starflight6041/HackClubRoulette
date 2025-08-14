@@ -7,6 +7,7 @@ public class CreateMap : MonoBehaviour
     public GameObject hexagon;
     public List<Battlemap> places = new List<Battlemap>();
     public List<Battlemap> removed = new List<Battlemap>();
+    
     public GameManagement gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,7 +26,7 @@ public class CreateMap : MonoBehaviour
                 else
                 {
                     GameObject h = Instantiate(hexagon, new Vector2((float)(i * 1.5 - 7), (float)(x * 1.5 - 3.25)), Quaternion.identity);
-                    h.GetComponent<Battlemap>().ChangeCoords(i, x);
+                    h.GetComponent<Battlemap>().ChangeCoords(i, (float) (x + .5));
                     places.Add(h.GetComponent<Battlemap>());
                 }
             }
@@ -47,7 +48,7 @@ public class CreateMap : MonoBehaviour
         //Occupy(randomB);
         return randomB;
     }
-    public void Occupy(int a, int b)
+    public void Occupy(float a, float b)
     {
 
         //places.Remove(b);
@@ -68,7 +69,7 @@ public class CreateMap : MonoBehaviour
         }
         
     }
-    public bool IsPositionUnoccupied(int x, int y)
+    public bool IsPositionUnoccupied(float x, float y)
     {
         for (int i = 0; i < places.Count; i++)
         {
@@ -79,9 +80,27 @@ public class CreateMap : MonoBehaviour
         }
         return false;
     }
+    public Battlemap GetTile(float x, float y)
+    {
+        for (int i = 0; i < places.Count; i++)
+        {
+            if (places[i].GetX() == x && places[i].GetY() == y)
+            {
+                return places[i];
+            }
+        }
+        for (int i = 0; i < removed.Count; i++)
+        {
+            if (removed[i].GetX() == x && removed[i].GetY() == y)
+            {
+                return removed[i];
+            }
+        }
+        return null;
+    }
 
 
-    public void Unoccupy(int a, int b)
+    public void Unoccupy(float a, float b)
     {
         //places.Add(b);
         //removed.Remove(b);

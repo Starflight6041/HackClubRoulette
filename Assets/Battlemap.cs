@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class Battlemap : MonoBehaviour
 {
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private bool isOccupied = false; 
+    // add prospective damage variable to display on hexagon
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,16 +27,16 @@ public class Battlemap : MonoBehaviour
         isOccupied = a;
     }
 
-    public void ChangeCoords(int a, int b)
+    public void ChangeCoords(float a, float b)
     {
         x = a;
         y = b;
     }
-    public int GetX()
+    public float GetX()
     {
         return x;
     }
-    public int GetY()
+    public float GetY()
     {
         return y;
     }
@@ -47,11 +48,11 @@ public class Battlemap : MonoBehaviour
         }
         else
         {
-            return new Vector2((float)(x * 1.5 - 7), (float)(y * 1.5 - 3.25));
+            return new Vector2((float)(x * 1.5 - 7), (float)((y-.5) * 1.5 - 3.25));
         }
 
     }
-    public Vector2 ReturnPosition(int i, int x)
+    public Vector2 ReturnPosition(float i, float x)
     {
         if (i % 2 == 0)
         {
@@ -59,7 +60,7 @@ public class Battlemap : MonoBehaviour
         }
         else
         {
-            return new Vector2((float)(i * 1.5 - 7), (float)(x * 1.5 - 3.25));
+            return new Vector2((float)(i * 1.5 - 7), (float)((x - .5) * 1.5 - 3.25));
         }
 
 

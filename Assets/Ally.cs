@@ -1,8 +1,10 @@
 using System;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 public class Ally : Entity
 {
     private bool isMoving = false;
@@ -10,6 +12,7 @@ public class Ally : Entity
     public InputAction click;
     private Vector2 prospectivePosition;
     private int maxMove;
+    public TMP_Text healthText;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,6 +21,11 @@ public class Ally : Entity
         mousepos = InputSystem.actions.FindAction("point");
         click = InputSystem.actions.FindAction("click");
         
+    }
+    public override void TakeDamage(int d)
+    {
+        base.TakeDamage(d);
+        healthText.text = "Kalda Health: " + health;
     }
 
     // Update is called once per frame
@@ -82,28 +90,36 @@ public class Ally : Entity
     {
 
     }
+    
     public void HighlightMoves()
     {
         for (int i = 0; i < map.GetMap().Count; i++)
         {
-            if (Math.Abs(x - map.GetMap()[i].GetX()) + Math.Abs(y - map.GetMap()[i].GetY()) <= movement)
+            if (Math.Abs(x - map.GetMap()[i].GetX()) + Math.Abs(y - map.GetMap()[i].GetY()) <= movement && map.GetMap()[i].GetComponent<Renderer>().material.color == Color.white)
             {
                 map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.softRed);
             }
-            else
-            {
-                map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-            }
+            //else
+           // {
+           //     map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+           // }
         }
-        
+
     }
     public void Unhighlight()
     {
         for (int i = 0; i < map.GetMap().Count; i++)
         {
+
+            //if (map.GetMap()[i].GetComponent<Renderer>().material.HasColor("softRed"))
+            //{
             
-            map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-            
+            //}
+            if (map.GetMap()[i].gameObject.GetComponent<Renderer>().material.color == Color.softRed)
+            {
+                map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+            }
+            // needs to set them back to the color they were 
         }
     }
 }

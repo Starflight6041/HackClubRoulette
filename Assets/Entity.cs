@@ -4,10 +4,11 @@ public class Entity : MonoBehaviour
 {
     public GameManagement gameManager; //probably grab this in void Start(); but I'm lazy rn
     public float timeToAct = 6;
-    public int x;
-    public int y;
+    public float x;
+    public float y;
     public int movement = 3;
     public CreateMap map;
+    public int health = 5; // change later
     public Battlemap tileOccupied;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -30,25 +31,29 @@ public class Entity : MonoBehaviour
     {
         return timeToAct;
     }
+    public virtual void TakeDamage(int d)
+    {
+        health -= d;
+    }
 
     // Update is called once per frame
     void Update()
     {
 
     }
-    public void ChangeX(int a)
+    public void ChangeX(float a)
     {
         x = a;
     }
-    public void ChangeY(int b)
+    public void ChangeY(float b)
     {
         y = b;
     }
-    public int GetX()
+    public float GetX()
     {
         return x;
     }
-    public int GetY()
+    public float GetY()
     {
         return y;
     }

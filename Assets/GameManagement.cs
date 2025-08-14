@@ -82,11 +82,11 @@ public class GameManagement : MonoBehaviour
                     {
                         // Debug.Log("mhm");
                         nextActing = gO.GetComponent<Entity>();
-                        for (int x = fastestEntities.Count - 1; x >= 0; x--)
-                        {
-
-                            fastestEntities.RemoveAt(x);
-                        }
+                        //for (int x = fastestEntities.Count - 1; x >= 0; x--)
+                       // {
+//
+                       //     fastestEntities.RemoveAt(x);
+                       // }
                         EntitySelectionPhase = false; // this does nothing for now
                         RunTurn(nextActing, nextActing.GetTime());
                         //Debug.Log(nextActing);
@@ -186,6 +186,11 @@ public class GameManagement : MonoBehaviour
             entities[i].AddTime(t * -1);
             
             
+        }
+        for (int x = fastestEntities.Count - 1; x >= 0; x--)
+        {
+
+            fastestEntities.RemoveAt(x);
         }
         e.Act();
         for (int i = 0; i < entities.Count; i++)

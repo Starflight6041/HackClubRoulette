@@ -9,10 +9,12 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
-    private int health;
+    //private int health;
     public int numPlayers = 1; //change later
     public static Ally[] players;
     public Ally closestPlayer;
+    public List<Vector2> willAttack = new List<Vector2>();
+    public List<int> damage = new List<int>();
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,10 +33,10 @@ public class Enemy : Entity
     {
 
     }
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-    }
+    //public void TakeDamage(int damage)
+    //{
+    //    health -= damage;
+    //}
 
     public void Attack(int x, int y)
     {
@@ -42,10 +44,72 @@ public class Enemy : Entity
     }
     public override void Act()
     {
+        ExecuteAttacks();
         FindClosestPlayer();
         MoveTowardsClosest();
+        LineAttack();
         AddTime(5);
         gameManager.GetFastestActing();
+    }
+    public void ExecuteAttacks()
+    {
+        for (int i = 0; i < willAttack.Count; i++)
+        {
+            for (int a = 0; a < players.Count(); a++)
+            {
+                if (players[a].GetX() == willAttack[i].x && players[a].GetY() == willAttack[i].y)
+                {
+                    players[a].TakeDamage(damage[a]);
+                }
+            }
+        }
+        for (int i = willAttack.Count - 1; i >= 0; i--)
+        {
+            UnhighlightAttack(willAttack[i].x, willAttack[i].y);
+            willAttack.RemoveAt(i);
+            damage.RemoveAt(i);
+        }
+    }
+    public void LineAttack()
+    {
+        FindClosestPlayer();
+        QueueAttack(closestPlayer.GetX(), closestPlayer.GetY(), 1);
+        QueueAttack(closestPlayer.GetX() + 1, (float) (closestPlayer.GetY() + .5), 1);
+        QueueAttack(closestPlayer.GetX() + - 1, (float) (closestPlayer.GetY() - .5), 1);
+
+    }
+    public void QueueAttack(float x, float y, int d)
+    {
+        willAttack.Add(new Vector2(x, y));
+        damage.Add(d);
+        HighlightAttack(x, y);
+    }
+    public void SpotAttack()
+    {
+        FindClosestPlayer();
+        QueueAttack(closestPlayer.GetX(), closestPlayer.GetY(), 2);
+
+    }
+    public void AreaControl()
+    {
+        
+    }
+    public void HighlightAttack(float x, float y)
+    {
+        if (map.GetTile(x,y))
+        {
+            map.GetTile(x, y).gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.orange);
+        }
+        
+        
+    }
+    public void UnhighlightAttack(float x, float y)
+    {
+        if (map.GetTile(x, y))
+        {
+            map.GetTile(x, y).gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+        }
+        
     }
     public void FindClosestPlayer()
     {
