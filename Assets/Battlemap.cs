@@ -4,7 +4,7 @@ public class Battlemap : MonoBehaviour
 {
     private int x;
     private int y;
-    private bool isOccupied; 
+    private bool isOccupied = false; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,9 +21,9 @@ public class Battlemap : MonoBehaviour
     {
         return isOccupied; 
     }
-    public void ChangeOccupied()
+    public void SetOccupied(bool a)
     {
-        isOccupied = !isOccupied;
+        isOccupied = a;
     }
 
     public void ChangeCoords(int a, int b)

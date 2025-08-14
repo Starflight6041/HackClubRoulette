@@ -44,4 +44,12 @@ public class Entity : MonoBehaviour
     {
         y = b;
     }
+    public int GetX()
+    {
+        return x;
+    }
+    public int GetY()
+    {
+        return y;
+    }
 }

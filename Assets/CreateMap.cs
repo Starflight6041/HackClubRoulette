@@ -6,7 +6,8 @@ public class CreateMap : MonoBehaviour
 {
     public GameObject hexagon;
     public List<Battlemap> places = new List<Battlemap>();
-    public List<Battlemap> removed = new List<Battlemap>(); 
+    public List<Battlemap> removed = new List<Battlemap>();
+    public GameManagement gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,7 +31,10 @@ public class CreateMap : MonoBehaviour
             }
 
         }
-        ChooseRandom(); 
+        //ChooseRandom(); 
+        Enemy.changeNumber(FindObjectsByType<Ally>(FindObjectsSortMode.None));
+        gameManager.ScatterEntities();
+        gameManager.GetFastestActing();
     }
     public List<Battlemap> GetMap()
     {
@@ -38,6 +42,7 @@ public class CreateMap : MonoBehaviour
     }
     public Battlemap ChooseRandom()
     {
+        
         Battlemap randomB = places[UnityEngine.Random.Range(0, places.Count - 1)];
         //Occupy(randomB);
         return randomB;
@@ -53,14 +58,26 @@ public class CreateMap : MonoBehaviour
             if (places[i].GetX() == a && places[i].GetY() == b)
             {
 
-                Debug.Log(places.Count);
+                
+                places[i].SetOccupied(true);
                 removed.Add(places[i]);
                 places.Remove(places[i]);
-                Debug.Log(places.Count);
+                
 
             }
         }
         
+    }
+    public bool IsPositionUnoccupied(int x, int y)
+    {
+        for (int i = 0; i < places.Count; i++)
+        {
+            if (places[i].GetX() == x && places[i].GetY() == y)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -72,10 +89,12 @@ public class CreateMap : MonoBehaviour
         {
             if (removed[i].GetX() == a && removed[i].GetY() == b)
             {
+                removed[i].SetOccupied(false);
                 places.Add(removed[i]);
-            removed.Remove(removed[i]);
+                removed.Remove(removed[i]);
+
             }
-            
+
         }
     }
     

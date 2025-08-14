@@ -819,8 +819,10 @@ MonoBehaviour:
   x: 0
   y: 0
   movement: 3
-  map: {fileID: 0}
+  map: {fileID: 1370671625}
   tileOccupied: {fileID: 0}
+  numPlayers: 1
+  closestPlayer: {fileID: 0}
 --- !u!212 &921205082
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -959,6 +961,7 @@ MonoBehaviour:
   hexagon: {fileID: 0}
   places: []
   removed: []
+  gameManager: {fileID: 231575946}
 --- !u!4 &1370671626
 Transform:
   m_ObjectHideFlags: 0
@@ -1187,8 +1190,10 @@ MonoBehaviour:
   x: 0
   y: 0
   movement: 3
-  map: {fileID: 0}
+  map: {fileID: 1370671625}
   tileOccupied: {fileID: 0}
+  numPlayers: 1
+  closestPlayer: {fileID: 0}
 --- !u!212 &2018286041
 SpriteRenderer:
   m_ObjectHideFlags: 0

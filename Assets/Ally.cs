@@ -49,9 +49,11 @@ public class Ally : Entity
                 if (isMoving && gO.GetComponent<Battlemap>() != null)
                 {
                     //Debug.Log("Check 1");
-
+                    Debug.Log(gO.GetComponent<Battlemap>().GetOccupied());
+                    Debug.Log("yes");
                     if (!gO.GetComponent<Battlemap>().GetOccupied() && Math.Abs(x - gO.GetComponent<Battlemap>().GetX()) + Math.Abs(y - gO.GetComponent<Battlemap>().GetY()) <= movement)
                     {
+
                         //Debug.Log("Check 2");
                         prospectivePosition = gO.GetComponent<Battlemap>().GetPosition();
                         gameObject.transform.position = prospectivePosition;
@@ -60,10 +62,10 @@ public class Ally : Entity
                         ChangeX(gO.GetComponent<Battlemap>().GetX());
                         ChangeY(gO.GetComponent<Battlemap>().GetY());
                         Unhighlight();
-                        map.Occupy(gO.GetComponent<Battlemap>().GetX(), gO.GetComponent<Battlemap>().GetY()); 
-                        tileOccupied = gO.GetComponent<Battlemap>(); 
+                        map.Occupy(gO.GetComponent<Battlemap>().GetX(), gO.GetComponent<Battlemap>().GetY());
+                        tileOccupied = gO.GetComponent<Battlemap>();
                         isMoving = false;
-                        
+
                         //gameObject.layer = 2;
                         gameManager.GetFastestActing();
                     }

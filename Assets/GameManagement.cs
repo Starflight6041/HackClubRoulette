@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,15 +24,16 @@ public class GameManagement : MonoBehaviour
     void Start()
     {
         //for (int i = 0; i < 10; i++)
-       // {
-          //  for (int x = 0; x < 5; x++)
-          //  {
-          //      possiblePositions.Add(battlemap.ReturnPosition(i, x));
-          //      Debug.Log(battlemap.ReturnPosition(i, x));
-         //   }
-       // }
-        ScatterEntities();
-        GetFastestActing();
+        // {
+        //  for (int x = 0; x < 5; x++)
+        //  {
+        //      possiblePositions.Add(battlemap.ReturnPosition(i, x));
+        //      Debug.Log(battlemap.ReturnPosition(i, x));
+        //   }
+        // }
+        //ScatterEntities();
+        
+        
         // test
         mousepos = InputSystem.actions.FindAction("point");
         click = InputSystem.actions.FindAction("click");
@@ -113,16 +115,16 @@ public class GameManagement : MonoBehaviour
     public void GetFastestActing() // Get the fastest acting to use for the RunTurn() method
     {
         //Debug.Log("fastest acting running");
-        
+
         fastestEntities.Add(entities[0]);
         if (fastestEntities.Count > 1)
         {
-           // Debug.Log(fastestEntities[0]);
-           // Debug.Log(fastestEntities[1]);
-          //  Debug.Log(fastestEntities[0].GetTime());
-           // Debug.Log(fastestEntities[1].GetTime());
+            // Debug.Log(fastestEntities[0]);
+            // Debug.Log(fastestEntities[1]);
+            //  Debug.Log(fastestEntities[0].GetTime());
+            // Debug.Log(fastestEntities[1].GetTime());
         }
-        
+
         for (int i = 1; i < entities.Count; i++)
         {
             if (entities[i].GetTime() < fastestEntities[0].GetTime()) // can be at 0 because they'll always have the same value if I didn't mess up badly
@@ -140,8 +142,30 @@ public class GameManagement : MonoBehaviour
             }
             // now prompt the player for their choice of entity to act
             //Debug.Log(fastestEntities[0]);
-           // Debug.Log(fastestEntities[0].GetTime());
+            // Debug.Log(fastestEntities[0].GetTime());
+
+
+        }
+        bool isPlayerActing = false;
+        for (int i = 0; i < fastestEntities.Count; i++)
+        {
+            if (fastestEntities[i].GetComponent<Ally>())
+            {
+                isPlayerActing = true;
+            }
+        }
+        if (isPlayerActing)
+        {
             PlayerSelects(fastestEntities);
+            Debug.Log("player acting");
+        }
+        else
+        {
+            Debug.Log("enemy acting");
+            
+            RunTurn(fastestEntities[0], fastestEntities[0].GetTime());
+                
+            
         }
     }
     public void PlayerSelects(List<Entity> e)
