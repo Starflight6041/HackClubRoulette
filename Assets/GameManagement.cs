@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
+using TMPro;
 using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,11 +15,14 @@ public class GameManagement : MonoBehaviour
     private bool EntitySelectionPhase = true;
     public List<Entity> fastestEntities = new List<Entity>();
     public Entity nextActing = null;
-    public Battlemap battlemap; 
+    public Battlemap battlemap;
     public InputAction mousepos;
     public InputAction click;
     public List<Vector2> possiblePositions = new List<Vector2>();
     public CreateMap map;
+    public int score = 0;
+    public TMP_Text scoreText;
+    public Entity e;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,8 +36,8 @@ public class GameManagement : MonoBehaviour
         //   }
         // }
         //ScatterEntities();
-        
-        
+
+
         // test
         mousepos = InputSystem.actions.FindAction("point");
         click = InputSystem.actions.FindAction("click");
@@ -50,7 +54,7 @@ public class GameManagement : MonoBehaviour
             map.Occupy(b.GetX(), b.GetY());
             entities[i].ChangeX(b.GetX());
             entities[i].ChangeY(b.GetY());
-            
+
             // Vector2 p = possiblePositions[UnityEngine.Random.Range(0, possiblePositions.Count - 1)];
             //Debug.Log(p);
             //entities[i].gameObject.transform.position = p;
@@ -84,10 +88,10 @@ public class GameManagement : MonoBehaviour
                         // Debug.Log("mhm");
                         nextActing = gO.GetComponent<Entity>();
                         //for (int x = fastestEntities.Count - 1; x >= 0; x--)
-                       // {
-//
-                       //     fastestEntities.RemoveAt(x);
-                       // }
+                        // {
+                        //
+                        //     fastestEntities.RemoveAt(x);
+                        // }
                         EntitySelectionPhase = false; // this does nothing for now
                         RunTurn(nextActing, nextActing.GetTime());
                         //Debug.Log(nextActing);
@@ -163,10 +167,10 @@ public class GameManagement : MonoBehaviour
         else
         {
             Debug.Log("enemy acting");
-            
+
             RunTurn(fastestEntities[0], fastestEntities[0].GetTime());
-                
-            
+
+
         }
     }
     public void PlayerSelects(List<Entity> e)
@@ -175,7 +179,7 @@ public class GameManagement : MonoBehaviour
         {
             // reference e[i].gameObject and place arrows over each of them
         }
-       // Debug.Log("PlayerSelects running");
+        // Debug.Log("PlayerSelects running");
         EntitySelectionPhase = true;
         //Debug.Log(EntitySelectionPhase);
     }
@@ -185,8 +189,8 @@ public class GameManagement : MonoBehaviour
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].AddTime(t * -1);
-            
-            
+
+
         }
         for (int x = fastestEntities.Count - 1; x >= 0; x--)
         {
@@ -200,8 +204,26 @@ public class GameManagement : MonoBehaviour
             //Debug.Log(entities[i].GetTime());
             //Debug.Log(entities[i]);
         }
-        
 
 
+
+    }
+    public void AddScore(int s)
+    {
+        score += s;
+        scoreText.text = "Score: " + score;
+
+    }
+    public void SpawnEnemy()
+    {
+
+        Battlemap b = map.ChooseRandom();
+        Entity a = Instantiate(e);
+        a.gameObject.transform.position = b.GetPosition();
+        a.tileOccupied = b;
+        map.Occupy(b.GetX(), b.GetY());
+        a.ChangeX(b.GetX());
+        a.ChangeY(b.GetY());
+        entities.Add(a);
     }
 }

@@ -14,11 +14,16 @@ public class Ally : Entity
     private Vector2 prospectivePosition;
     private int maxMove;
     public TMP_Text healthText;
+    public Canvas attacks;
+    public bool isAttacking = false;
+    public bool isInstantAttacking = false;
+    public bool isAoeAttacking = false;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        attacks.gameObject.SetActive(false);
         mousepos = InputSystem.actions.FindAction("point");
         click = InputSystem.actions.FindAction("click");
         
@@ -26,22 +31,100 @@ public class Ally : Entity
     public override void TakeDamage(int d)
     {
         base.TakeDamage(d);
-        healthText.text = "Kalda Health: " + health;
+        healthText.text = "Ally Health: " + health;
     }
 
+    
     // Update is called once per frame
     void Update()
     {
 
+    }
+    public void InstantAttack()
+    {
+        //Debug.Log(isAttacking);
+        if (isAttacking)
+        {
+            isInstantAttacking = !isInstantAttacking;
+            isAoeAttacking = false;
+            
+            isAttacking = !isAttacking;
+        //    Debug.Log("yup" + " " + isInstantAttacking);
+        }
+        if (isInstantAttacking)
+        {
+            HighlightInstant();
+        }
+        else
+        {
+            UnhighlightInstant();
+        }
+        
+    }
+    public void AoeAttack()
+    {
+        if (isAttacking)
+        {
+            isAoeAttacking = !isAoeAttacking;
+            isInstantAttacking = false;
+            UnhighlightInstant();
+            isAttacking = !isAttacking;
+        //    Debug.Log("yup" + " " + isInstantAttacking);
+        }
+        if (isAoeAttacking)
+        {
+            HighlightInstant();
+        }
+        else
+        {
+            UnhighlightInstant(); // has to reduce damage by 1, not unhighlight
+        }
+        
+    }
+
+    public void DeclareAttack()
+    {
+
+        if (click.WasPressedThisFrame())
+        {
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousepos.ReadValue<Vector2>()), Vector2.zero);
+            if (hit.collider != null)
+            {
+                GameObject gO = hit.collider.gameObject;
+                if (isInstantAttacking)
+                {
+                    if (gO.GetComponent<Enemy>())
+                    {
+                        if (Math.Abs(gO.GetComponent<Enemy>().GetX() - x) + Math.Abs(gO.GetComponent<Enemy>().GetY() - y) < 2)
+                        {
+                            gO.GetComponent<Enemy>().TakeDamage(2);
+                            isInstantAttacking = false;
+                            attacks.gameObject.SetActive(false);
+                            UnhighlightInstant();
+                            gameManager.GetFastestActing();
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
 
     public override void Act()
     {
         isMoving = true;
+        isAttacking = true;
+        isInstantAttacking = false;
+        isAoeAttacking = false;
         HighlightMoves();
+        AttackUI();
         AddTime(5);
         //Debug.Log("yes");
+    }
+    public void AttackUI()
+    {
+        attacks.gameObject.SetActive(true);
     }
     public void PlayerMove()
     {
@@ -76,7 +159,7 @@ public class Ally : Entity
                         isMoving = false;
 
                         //gameObject.layer = 2;
-                        gameManager.GetFastestActing();
+                        //gameManager.GetFastestActing();
                     }
                 }
 
@@ -100,27 +183,45 @@ public class Ally : Entity
             {
                 map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.softRed);
             }
-            //else
-           // {
-           //     map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-           // }
+            
         }
 
+    }
+    public void HighlightInstant()
+    {
+        for (int i = 0; i < map.GetMap().Count; i++)
+        {
+            if (Math.Abs(x - map.GetMap()[i].GetX()) + Math.Abs(y - map.GetMap()[i].GetY()) <= 2 && map.GetMap()[i].GetComponent<Renderer>().material.color == Color.white)
+            {
+                map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+            }
+            
+        }
+    }
+    public void UnhighlightInstant()
+    {
+        for (int i = 0; i < map.GetMap().Count; i++)
+        {
+
+            
+            if (map.GetMap()[i].gameObject.GetComponent<Renderer>().material.color == Color.green)
+            {
+                map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+            }
+            
+        }
     }
     public void Unhighlight()
     {
         for (int i = 0; i < map.GetMap().Count; i++)
         {
 
-            //if (map.GetMap()[i].GetComponent<Renderer>().material.HasColor("softRed"))
-            //{
             
-            //}
             if (map.GetMap()[i].gameObject.GetComponent<Renderer>().material.color == Color.softRed)
             {
                 map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
             }
-            // needs to set them back to the color they were 
+            
         }
     }
 }

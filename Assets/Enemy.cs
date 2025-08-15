@@ -62,7 +62,7 @@ public class Enemy : Entity
             {
                 if (players[a].GetX() == willAttack[i].x && players[a].GetY() == willAttack[i].y)
                 {
-                    players[a].TakeDamage(damage[a]);
+                    players[a].TakeDamage(damage[i]);
                 }
             }
         }
@@ -94,7 +94,7 @@ public class Enemy : Entity
         //    }
         //}
         RaycastHit2D[] hits = Physics2D.CircleCastAll(Battlemap.ReturnPosition(x, y), .5f, new Vector2(Battlemap.ReturnPosition(closestPlayer.GetX(), closestPlayer.GetY()).x - Battlemap.ReturnPosition(x,y).x, Battlemap.ReturnPosition(closestPlayer.GetX(), closestPlayer.GetY()).y - Battlemap.ReturnPosition(x,y).y), 3);
-        Debug.Log(hits[0]);
+        //Debug.Log(hits[0]);
         for (int i = 0; i < hits.Count(); i++)
         {
             if (hits[i].collider.gameObject.GetComponent<Battlemap>())
@@ -104,6 +104,25 @@ public class Enemy : Entity
             }
         }
 
+
+    }
+    public override void TakeDamage(int d)
+    {
+        health -= d;
+        if (health <= 0)
+        {
+            gameManager.AddScore(1);
+            gameManager.SpawnEnemy();
+            map.Unoccupy(x, y);
+            for (int i = willAttack.Count - 1; i >= 0; i--)
+            {
+                UnhighlightAttack(willAttack[i].x, willAttack[i].y);
+                willAttack.RemoveAt(i);
+                damage.RemoveAt(i);
+
+                gameObject.SetActive(false);
+            }
+        }
 
     }
     public void QueueAttack(float x, float y, int d)
