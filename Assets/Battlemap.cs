@@ -52,7 +52,7 @@ public class Battlemap : MonoBehaviour
         }
 
     }
-    public Vector2 ReturnPosition(float i, float x)
+    public static Vector2 ReturnPosition(float i, float x)
     {
         if (i % 2 == 0)
         {

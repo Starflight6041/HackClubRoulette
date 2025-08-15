@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Enemy : Entity
 {
@@ -15,12 +16,14 @@ public class Enemy : Entity
     public Ally closestPlayer;
     public List<Vector2> willAttack = new List<Vector2>();
     public List<int> damage = new List<int>();
+
+    
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //Debug.Log("this is the number of allies" + FindAnyObjectByType(typeof(Ally)));
-        
+        changeMovement(2);
     }
     public static void changeNumber(Ally[] a)
     {
@@ -73,9 +76,34 @@ public class Enemy : Entity
     public void LineAttack()
     {
         FindClosestPlayer();
-        QueueAttack(closestPlayer.GetX(), closestPlayer.GetY(), 1);
-        QueueAttack(closestPlayer.GetX() + 1, (float) (closestPlayer.GetY() + .5), 1);
-        QueueAttack(closestPlayer.GetX() + - 1, (float) (closestPlayer.GetY() - .5), 1);
+
+        //QueueAttack(closestPlayer.GetX(), closestPlayer.GetY(), 1);
+        //QueueAttack(closestPlayer.GetX() + 1, (float) (closestPlayer.GetY() + .5), 1);
+        //QueueAttack(closestPlayer.GetX() + - 1, (float) (closestPlayer.GetY() - .5), 1);
+        //for (float i = x; i < closestPlayer.GetX(); i += (closestPlayer.GetX() - x) / 50)
+        //{
+        //    for (float a = y; a < closestPlayer.GetY(); a += (closestPlayer.GetY() - y) / 50)
+        //    {
+        //        for (int b = 0; b < map.GetMap().Count; b++)
+        //        {
+        //            if (Math.Abs(map.GetMap()[b].GetX() - i) + Math.Abs(map.GetMap()[b].GetY() - a) < 2)
+        //            {
+        //                QueueAttack(map.GetMap()[b].GetX(), map.GetMap()[b].GetY(), 1);
+        //            }
+        //        }
+        //    }
+        //}
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(Battlemap.ReturnPosition(x, y), .5f, new Vector2(Battlemap.ReturnPosition(closestPlayer.GetX(), closestPlayer.GetY()).x - Battlemap.ReturnPosition(x,y).x, Battlemap.ReturnPosition(closestPlayer.GetX(), closestPlayer.GetY()).y - Battlemap.ReturnPosition(x,y).y), 3);
+        Debug.Log(hits[0]);
+        for (int i = 0; i < hits.Count(); i++)
+        {
+            if (hits[i].collider.gameObject.GetComponent<Battlemap>())
+            {
+
+                QueueAttack(hits[i].collider.gameObject.GetComponent<Battlemap>().GetX(), hits[i].collider.gameObject.GetComponent<Battlemap>().GetY(), 1);
+            }
+        }
+
 
     }
     public void QueueAttack(float x, float y, int d)
@@ -130,53 +158,95 @@ public class Enemy : Entity
     {
         Debug.Log("moving");
 
-        int xMove = 0;
-        if (closestPlayer.GetX() > x)
-        {
-            xMove = 1;
-        }
-        if (closestPlayer.GetX() < x)
-        {
-            xMove = -1;
-        }
-        int yMove = 0;
-        if (closestPlayer.GetY() > y)
-        {
-            yMove = 1;
-        }
-        if (closestPlayer.GetY() < y)
-        {
-            yMove = -1;
-        }
-        if (map.IsPositionUnoccupied(x + xMove, y + yMove))
-        {
+        //float xMove = 0;
+        //if (closestPlayer.GetX() > x)
+        //{
 
-            map.Unoccupy(x, y);
-            x = x + xMove;
-            y = y + yMove;
-            gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
-            map.Occupy(x, y);
+        //    xMove = 1;
+       // }
+        //if (closestPlayer.GetX() < x)
+        //{
+        //    xMove = -1;
+        //}
+        //float yMove = 0;
+        //if (closestPlayer.GetY() > y)
+        //{
+
+        //    if (xMove == 0)
+        //    {
+       //         yMove = 1;
+        //    }
+        //    else
+        //    {
+        //        yMove = .5f;
+        //    }
 
 
-        }
-        else if (map.IsPositionUnoccupied(x, y + yMove))
-        {
-            map.Unoccupy(x, y);
 
-            y = y + yMove;
-            gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
-            map.Occupy(x, y);
-        }
-        else if (map.IsPositionUnoccupied(x + xMove, y))
-        {
-            map.Unoccupy(x, y);
-            x = x + xMove;
+        //}
+        //if (closestPlayer.GetY() < y)
+        //{
+        //    if (xMove == 0)
+        //    {
+        //        yMove = -1;
+        //    }
+        //    else
+        //    {
+        //        yMove = -.5f;
+        //    }
+        //}
+        //if (closestPlayer.GetY() == y)
+        //{
+        //    if (xMove != 0)
+        //    {
+        //        yMove = -.5f;
+        //    }
+        //}
+        //if (map.IsPositionUnoccupied(x + xMove, y + yMove))
+        //{
 
-            gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
-            map.Occupy(x, y);
+        //    map.Unoccupy(x, y);
+        //    x = x + xMove;
+        //    y = y + yMove;
+        //    gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
+        //    map.Occupy(x, y);
+
+
+        //}
+        Battlemap tileToMoveTo = map.ChooseRandom();
+        for (int i = 0; i < map.GetMap().Count; i++)
+        {
+            if (Math.Abs(map.GetMap()[i].GetX() - x) + Math.Abs(map.GetMap()[i].GetY() - y) <= movement && Math.Abs(map.GetMap()[i].GetX() - closestPlayer.GetX()) + Math.Abs(map.GetMap()[i].GetY() - closestPlayer.GetY()) < Math.Abs(tileToMoveTo.GetX() - closestPlayer.GetX()) + Math.Abs(tileToMoveTo.GetY() - closestPlayer.GetY()))
+            {
+                tileToMoveTo = map.GetMap()[i];
+            }
         }
+        map.Unoccupy(x, y);
+        x = tileToMoveTo.GetX();
+        y = tileToMoveTo.GetY();
+        gameObject.transform.position = Battlemap.ReturnPosition(x, y);
+        map.Occupy(x, y);
+
+        //else if (map.IsPositionUnoccupied(x, y + yMove))
+        //{
+        //    map.Unoccupy(x, y);
+
+        //    y = y + yMove;
+        //    gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
+        //    map.Occupy(x, y);
+        //}
+        //else if (map.IsPositionUnoccupied(x + xMove, y))
+        //{
+        //    map.Unoccupy(x, y);
+        //    x = x + xMove;
+        //
+        //    gameObject.transform.position = tileOccupied.ReturnPosition(x, y);
+        //    map.Occupy(x, y);
+        //}
         //when enemies have more movement, use a for loop to loop through possible locations to move to
-
+        //I could do this, or I could not
+        //I know how to do this, but I really don't want to
+        //I might do this
 
 
     }

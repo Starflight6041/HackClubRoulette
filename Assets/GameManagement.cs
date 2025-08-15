@@ -78,8 +78,9 @@ public class GameManagement : MonoBehaviour
                 if (EntitySelectionPhase)
                 {
                     //   Debug.Log("yes");
-                    if (gO.GetComponent<Entity>() != null && fastestEntities.Contains(gO.GetComponent<Entity>()))
+                    if (gO.GetComponent<Ally>() != null && fastestEntities.Contains(gO.GetComponent<Entity>()))
                     {
+                        //Debug.Log("wahoooo");
                         // Debug.Log("mhm");
                         nextActing = gO.GetComponent<Entity>();
                         //for (int x = fastestEntities.Count - 1; x >= 0; x--)

@@ -9,6 +9,7 @@ public class Ally : Entity
 {
     private bool isMoving = false;
     public InputAction mousepos;
+    
     public InputAction click;
     private Vector2 prospectivePosition;
     private int maxMove;

@@ -22,6 +22,10 @@ public class Entity : MonoBehaviour
         Debug.Log("no");
         gameManager.GetFastestActing();
     }
+    public void changeMovement(int m)
+    {
+        movement = m;
+    }
     public void AddTime(float t)
     {
         timeToAct += t;
