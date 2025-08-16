@@ -78,12 +78,12 @@ public class Ally : Entity
     }
     public void PassTurn()
     {
-        if (isAttacking && !isMoving)
+        if ((isAttacking && !isMoving) || isInstantAttacking)
         {
 
             isInstantAttacking = false;
             UnhighlightInstant();
-            isAttacking = !isAttacking;
+            isAttacking = false;
             gameManager.GetFastestActing();
             //    Debug.Log("yup" + " " + isInstantAttacking);
         }
