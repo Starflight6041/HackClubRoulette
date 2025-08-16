@@ -62,13 +62,15 @@ public class Enemy : Entity
             {
                 if (players[a].GetX() == willAttack[i].x && players[a].GetY() == willAttack[i].y)
                 {
-                    players[a].TakeDamage(damage[i]);
+                    players[a].TakeDamage(1);
+                    
                 }
             }
         }
         for (int i = willAttack.Count - 1; i >= 0; i--)
         {
-            UnhighlightAttack(willAttack[i].x, willAttack[i].y);
+            //UnhighlightAttack(willAttack[i].x, willAttack[i].y);
+            map.GetTile(willAttack[i].x, willAttack[i].y).ChangeDamage(-1);
             willAttack.RemoveAt(i);
             damage.RemoveAt(i);
         }
@@ -116,12 +118,14 @@ public class Enemy : Entity
             map.Unoccupy(x, y);
             for (int i = willAttack.Count - 1; i >= 0; i--)
             {
-                UnhighlightAttack(willAttack[i].x, willAttack[i].y);
+                map.GetTile(willAttack[i].x, willAttack[i].y).ChangeDamage(-1);
                 willAttack.RemoveAt(i);
                 damage.RemoveAt(i);
 
-                gameObject.SetActive(false);
+
             }
+            gameManager.RemoveEntity(this);
+            gameObject.SetActive(false);
         }
 
     }
@@ -129,6 +133,7 @@ public class Enemy : Entity
     {
         willAttack.Add(new Vector2(x, y));
         damage.Add(d);
+        map.GetTile(x, y).ChangeDamage(1);
         HighlightAttack(x, y);
     }
     public void SpotAttack()

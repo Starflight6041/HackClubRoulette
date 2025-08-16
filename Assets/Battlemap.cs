@@ -1,16 +1,29 @@
+using System.Data;
+using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class Battlemap : MonoBehaviour
 {
     private float x;
     private float y;
-    private bool isOccupied = false; 
+    private bool isOccupied = false;
+    public int damage = 0;
+    public GameObject damageNumber;
+    public Camera cam;
+    public Canvas damageCanvas;
     // add prospective damage variable to display on hexagon
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GameObject g = Instantiate(GameObject.Find("DamageNumber"));
 
+        damageNumber = g;
+        g.transform.SetParent(damageCanvas.transform);
+        g.transform.position = cam.WorldToScreenPoint(GetPosition());
+        ChangeDamage(0);
+        
     }
 
     // Update is called once per frame
@@ -25,6 +38,21 @@ public class Battlemap : MonoBehaviour
     public void SetOccupied(bool a)
     {
         isOccupied = a;
+    }
+    public void ChangeDamage(int d)
+    {
+        damage += d;
+        if (damage > 0)
+        {
+            damageNumber.gameObject.SetActive(true);
+            damageNumber.GetComponent<TMP_Text>().text = "" + damage;
+        }
+        else
+        {
+            gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+            damageNumber.gameObject.SetActive(false);
+        }
+        
     }
 
     public void ChangeCoords(float a, float b)

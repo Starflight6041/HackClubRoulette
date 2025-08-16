@@ -18,6 +18,8 @@ public class Ally : Entity
     public bool isAttacking = false;
     public bool isInstantAttacking = false;
     public bool isAoeAttacking = false;
+    public GameObject attackCircle;
+    public bool isAlive = true;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -26,12 +28,24 @@ public class Ally : Entity
         attacks.gameObject.SetActive(false);
         mousepos = InputSystem.actions.FindAction("point");
         click = InputSystem.actions.FindAction("click");
+        attackCircle.SetActive(false);
         
     }
     public override void TakeDamage(int d)
     {
         base.TakeDamage(d);
+
         healthText.text = "Ally Health: " + health;
+        if (health <= 0 && isAlive)
+        {
+            map.Unoccupy(x, y);
+            isAlive = false;
+            gameManager.RemoveEntity(this);
+            gameObject.SetActive(false);
+            gameManager.IncreaseDeadAllies();
+            
+        }
+        
     }
 
     
@@ -43,7 +57,7 @@ public class Ally : Entity
     public void InstantAttack()
     {
         //Debug.Log(isAttacking);
-        if (isAttacking)
+        if (isAttacking && !isMoving)
         {
             isInstantAttacking = !isInstantAttacking;
             isAoeAttacking = false;
@@ -53,6 +67,7 @@ public class Ally : Entity
         }
         if (isInstantAttacking)
         {
+            
             HighlightInstant();
         }
         else
@@ -61,25 +76,17 @@ public class Ally : Entity
         }
         
     }
-    public void AoeAttack()
+    public void PassTurn()
     {
-        if (isAttacking)
+        if (isAttacking && !isMoving)
         {
-            isAoeAttacking = !isAoeAttacking;
+
             isInstantAttacking = false;
             UnhighlightInstant();
             isAttacking = !isAttacking;
-        //    Debug.Log("yup" + " " + isInstantAttacking);
+            gameManager.GetFastestActing();
+            //    Debug.Log("yup" + " " + isInstantAttacking);
         }
-        if (isAoeAttacking)
-        {
-            HighlightInstant();
-        }
-        else
-        {
-            UnhighlightInstant(); // has to reduce damage by 1, not unhighlight
-        }
-        
     }
 
     public void DeclareAttack()
@@ -189,27 +196,32 @@ public class Ally : Entity
     }
     public void HighlightInstant()
     {
-        for (int i = 0; i < map.GetMap().Count; i++)
-        {
-            if (Math.Abs(x - map.GetMap()[i].GetX()) + Math.Abs(y - map.GetMap()[i].GetY()) <= 2 && map.GetMap()[i].GetComponent<Renderer>().material.color == Color.white)
-            {
-                map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.green);
-            }
-            
-        }
+        //for (int i = 0; i < map.GetMap().Count; i++)
+        // {
+        //    if (Math.Abs(x - map.GetMap()[i].GetX()) + Math.Abs(y - map.GetMap()[i].GetY()) <= 2 && map.GetMap()[i].GetComponent<Renderer>().material.color == Color.white)
+        //    {
+        //        Debug.Log("greening");
+        //        map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+        //        Debug.Log(map.GetMap()[i].GetComponent<Renderer>().material.color);
+        //    }
+
+        //}
+        attackCircle.SetActive(true);
     }
     public void UnhighlightInstant()
     {
-        for (int i = 0; i < map.GetMap().Count; i++)
-        {
+        //for (int i = 0; i < map.GetMap().Count; i++)
+        //{
 
-            
-            if (map.GetMap()[i].gameObject.GetComponent<Renderer>().material.color == Color.green)
-            {
-                map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-            }
-            
-        }
+
+        //    if (map.GetMap()[i].gameObject.GetComponent<Renderer>().material.color == Color.green)
+        //    {
+        //        map.GetMap()[i].GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+        //    }
+
+        //}
+        attackCircle.SetActive(false);
+        
     }
     public void Unhighlight()
     {

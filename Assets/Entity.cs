@@ -38,11 +38,11 @@ public class Entity : MonoBehaviour
     public virtual void TakeDamage(int d)
     {
         health -= d;
-        if (health <= 0)
-        {
-            map.Unoccupy(x, y);
-            gameObject.SetActive(false);
-        }
+        //if (health <= 0)
+        //{
+        //    map.Unoccupy(x, y);
+       //     gameObject.SetActive(false);
+        //}
     }
 
     // Update is called once per frame

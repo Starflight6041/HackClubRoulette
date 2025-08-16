@@ -6,6 +6,8 @@ using TMPro;
 using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManagement : MonoBehaviour
 {
@@ -23,10 +25,15 @@ public class GameManagement : MonoBehaviour
     public int score = 0;
     public TMP_Text scoreText;
     public Entity e;
+    public int deadAllies;
+    public bool gameOver = false;
+    public Canvas gameOverCanvas;
+    public TMP_Text finalScore;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gameOverCanvas.gameObject.SetActive(false);
         //for (int i = 0; i < 10; i++)
         // {
         //  for (int x = 0; x < 5; x++)
@@ -42,6 +49,10 @@ public class GameManagement : MonoBehaviour
         mousepos = InputSystem.actions.FindAction("point");
         click = InputSystem.actions.FindAction("click");
         // now use Raycast
+    }
+    public void RemoveEntity(Entity e)
+    {
+        entities.Remove(e);
     }
     public void ScatterEntities()
     {
@@ -185,25 +196,29 @@ public class GameManagement : MonoBehaviour
     }
     public void RunTurn(Entity e, float t)
     {
-
-        for (int i = 0; i < entities.Count; i++)
+        if (!gameOver)
         {
-            entities[i].AddTime(t * -1);
+            for (int i = 0; i < entities.Count; i++)
+            {
+                entities[i].AddTime(t * -1);
 
 
+            }
+            for (int x = fastestEntities.Count - 1; x >= 0; x--)
+            {
+
+                fastestEntities.RemoveAt(x);
+            }
+            e.Act();
+            for (int i = 0; i < entities.Count; i++)
+            {
+
+                //Debug.Log(entities[i].GetTime());
+                //Debug.Log(entities[i]);
+            }
         }
-        for (int x = fastestEntities.Count - 1; x >= 0; x--)
-        {
 
-            fastestEntities.RemoveAt(x);
-        }
-        e.Act();
-        for (int i = 0; i < entities.Count; i++)
-        {
 
-            //Debug.Log(entities[i].GetTime());
-            //Debug.Log(entities[i]);
-        }
 
 
 
@@ -225,5 +240,31 @@ public class GameManagement : MonoBehaviour
         a.ChangeX(b.GetX());
         a.ChangeY(b.GetY());
         entities.Add(a);
+        if (score > 3)
+        {
+            Battlemap c = map.ChooseRandom();
+            Entity d = Instantiate(e);
+            d.gameObject.transform.position = c.GetPosition();
+            d.tileOccupied = c;
+            map.Occupy(c.GetX(), c.GetY());
+            d.ChangeX(c.GetX());
+            d.ChangeY(c.GetY());
+            entities.Add(d);
+        }
+    }
+    public void IncreaseDeadAllies()
+    {
+        deadAllies += 1;
+        if (deadAllies == 2)
+        {
+            gameOver = true;
+            gameOverCanvas.gameObject.SetActive(true);
+            finalScore.text = "Score: " + score;
+            
+        }
+    }
+    public void ResetGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
